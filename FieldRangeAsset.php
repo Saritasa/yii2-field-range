@@ -6,10 +6,11 @@
  * @version 1.3.1
  */
 
+//namespace kartik\field;
 namespace saritasa\field;
 
 /**
- * Field Range bundle for \saritasa\field\FieldRange
+ * Field Range bundle for \kartik\field\FieldRange
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0

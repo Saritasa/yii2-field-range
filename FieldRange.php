@@ -6,14 +6,19 @@
  * @version 1.3.1
  */
 
+//namespace kartik\field;
 namespace saritasa\field;
 
+//use kartik\date\DatePicker;
 use yii\base\Model;
 use yii\base\Widget;
 use yii\web\View;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
+//use kartik\base\Config;
+//use kartik\helpers\Html;
 use yii\helpers\Html;
+//use kartik\form\ActiveForm;
 use yii\base\InvalidConfigException;
 
 /**
@@ -187,11 +192,13 @@ class FieldRange extends Widget
      * - `{widget}`: will be replaced by the range widget markup
      * - `{error}`: the common error block for the widget.
      */
-    public $template = '{widget}{error}';
+    //public $template = '{label}{widget}{error}';
+	public $template = '{widget}{error}';
 
     /**
      * @var string the field separator string between first and second field
      */
+    //public $separator = '&larr; to &rarr;';
     public $separator = 'to';
 
     /**
@@ -199,6 +206,7 @@ class FieldRange extends Widget
      *
      * - `tag`: _string_, the HTML tag used to render the separator container. Defaults to `span`.
      */
+    //public $separatorOptions = ['class' => 'input-group-addon'];
     public $separatorOptions = ['class' => ''];
 
     /**
@@ -492,7 +500,7 @@ class FieldRange extends Widget
             $this->errorContainer['id'] = $this->options1['id'] . '-error';
         }
         $this->container['id'] = $this->options['id'] . '-container';
-        $this->container['style'] = 'margin-bottom:0';
+		$this->container['style'] = 'margin-bottom:0';
     }
 
     /**
