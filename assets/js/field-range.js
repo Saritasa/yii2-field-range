@@ -1,10 +1,11 @@
 /*!
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
- * @version 1.3.5
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2016
+ * @version 1.3.1
  *
  * Client validation extension for the yii2-field-range extension
  * 
  * Author: Kartik Visweswaran
+ * Copyright: 2015, Kartik Visweswaran, Krajee.com
  * For more JQuery plugins visit http://plugins.krajee.com
  * For more Yii related demos visit http://demos.krajee.com
  */
@@ -15,7 +16,7 @@
         return Object.prototype.toString.call(a) === '[object Array]' ||
             Object.prototype.toString.call(a) === '[object Object]';
     };
-    setContextCss = function (id, css) {
+    setContextCss = function(id, css) {
         var $el = $('#' + id).closest('.' + css), altCss;
         if (!$el.length) {
             return;
@@ -29,10 +30,8 @@
         self.$attrFrom = $("#" + options.attrFrom);
         self.$mainContainer = $("#" + options.container);
         self.$errorContainer = $("#" + options.errorContainer);
-        self.$contFrom = self.$attrFrom.closest('.kv-container-from');
-        self.$contTo = self.$attrTo.closest('.kv-container-to');
-        self.$errorBlockFrom = self.$contFrom.find('.help-block');
-        self.$errorBlockTo = self.$contTo.find('.help-block');
+        self.$errorBlockFrom = self.$attrFrom.closest('.kv-container-from').find('.help-block');
+        self.$errorBlockTo = self.$attrTo.closest('.kv-container-to').find('.help-block');
         self.$errorBlock = self.$errorContainer.find('.help-block');
         self.$form = self.$attrFrom.closest('form');
         self.errorToMsg = "";
@@ -50,12 +49,7 @@
                     self.reset();
                 }, 100);
             });
-            self.$form.on('beforeValidateAttribute', function () {
-                self.$contFrom.removeClass('has-error');
-                self.$contTo.removeClass('has-error');
-                self.$errorBlockFrom.removeClass('invalid-feedback');
-                self.$errorBlockTo.removeClass('invalid-feedback');
-            }).on('afterValidate', function (event, messages) {
+            self.$form.on('afterValidate', function (event, messages) {
                 var idFrom = self.$attrFrom.attr('id'), idTo = self.$attrTo.attr('id');
                 if (idFrom in messages) {
                     self.validateAttribute(messages[idFrom], idFrom, idTo);
@@ -63,10 +57,11 @@
                 if (idTo in messages) {
                     self.validateAttribute(messages[idTo], idFrom, idTo);
                 }
-            }).on('afterValidateAttribute', function (event, attribute, messages) {
+            });
+            self.$form.on('afterValidateAttribute', function (event, attribute, messages) {
                 var idFrom = self.$attrFrom.attr('id'), idTo = self.$attrTo.attr('id');
                 self.$errorBlock.html('');
-                self.$errorContainer.removeClass('has-success has-error invalid-feedback');
+                self.$errorContainer.removeClass('has-success has-error');
                 if (attribute.id === idFrom || attribute.id === idTo) {
                     self.validateAttribute(messages, idFrom, idTo);
                 }

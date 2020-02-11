@@ -1,32 +1,27 @@
 <?php
 
 /**
- * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2018
+ * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2016
  * @package yii2-field-range
- * @version 1.3.5
+ * @version 1.3.1
  */
 
-namespace kartik\field;
+namespace saritasa\field;
 
-use Exception;
-use kartik\base\Config;
-use kartik\date\DatePicker;
-use kartik\form\ActiveForm;
-use kartik\helpers\Html;
-use yii\base\InvalidConfigException;
 use yii\base\Model;
-use kartik\base\Widget;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Json;
+use yii\base\Widget;
 use yii\web\View;
+use yii\helpers\Json;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\base\InvalidConfigException;
 
 /**
  * FieldRange widget enables to setup and manage an input field range (from/to values) that works seamlessly with
  * [[ActiveForm]] and [[\kartik\form\ActiveField]].
  *
  * The widget renders the range feature by implementing styling available with
- * - [Bootstrap 3 input group addons](http://getbootstrap.com/components/#input-groups) for [[bsVersion]] = `3.x`
- * - [Bootstrap 4 input group addons](http://getbootstrap.com/components/#input-groups) for [[bsVersion]] = `4.x`
+ * [Bootstrap 3 input group addons markup](http://getbootstrap.com/components/#input-groups).
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 1.0
@@ -153,6 +148,162 @@ class FieldRange extends Widget
      * Krajee FileInput widget [[\kartik\file\FileInput]]
      */
     const INPUT_FILE_WIDGET = '\kartik\file\FileInput';
+
+    /**
+     * @var ActiveForm the form instance, if used with active form
+     */
+    public $form;
+
+    /**
+     * @var Model the data model that this widget is associated with.
+     */
+    public $model;
+
+    /**
+     * @var string the input types for the field (must be one of the `kartik\field\FieldRange::INPUT_XXX` constants.
+     */
+    public $type = self::INPUT_TEXT;
+
+    /**
+     * @var string the widget class to use if [[type]] is set to [[INPUT_WIDGET]].
+     */
+    public $widgetClass;
+
+    /**
+     * @var string the label to be displayed. Positioning of the label can be controlled by the [[template]] property.
+     */
+    public $label = '';
+
+    /**
+     * @var array HTML attributes for the label.
+     */
+    public $labelOptions = [];
+
+    /**
+     * @var string the template to render the widget.
+     *
+     * The following special tokens will be replaced:
+     * - `{label}`: will be replaced by the [[label]] property
+     * - `{widget}`: will be replaced by the range widget markup
+     * - `{error}`: the common error block for the widget.
+     */
+    public $template = '{widget}{error}';
+
+    /**
+     * @var string the field separator string between first and second field
+     */
+    public $separator = 'to';
+
+    /**
+     * @var array HTML attributes for the separator. The following array keys are specially identified:
+     *
+     * - `tag`: _string_, the HTML tag used to render the separator container. Defaults to `span`.
+     */
+    public $separatorOptions = ['class' => ''];
+
+    /**
+     * @var boolean whether to implement and render bootstrap 3 addons using [[\kartik\form\ActiveField]].
+     *
+     * - if set to `true`, the form instance must be based on [[ActiveForm]].
+     * - if set to `false` you can use your own widget based on [[\yii\widgets\ActiveForm]].
+     */
+    public $useAddons = true;
+
+    /**
+     * @var string the first field's model attribute that this widget is associated with.
+     */
+    public $attribute1;
+
+    /**
+     * @var array the active field configuration for attribute1 (applicable when [[form]] property is set).
+     * @see [[\kartik\form\ActiveField]]
+     */
+    public $fieldConfig1 = [];
+
+    /**
+     * @var string the first field's input name. This must be set if [[model]] and [[attribute1]] are not set.
+     */
+    public $name1;
+
+    /**
+     * @var string the first field's input value.
+     */
+    public $value1;
+
+    /**
+     * @var array the option data items for first field if [[type]] is set to [[INPUT_DROPDOWN_LIST]], [[INPUT_LIST_BOX]],
+     * [[INPUT_CHECKBOX_LIST]], [[INPUT_RADIO_LIST]], [[INPUT_CHECKBOX_BUTTON_GROUP]], [[INPUT_RADIO_BUTTON_GROUP]].
+     *
+     * @see [[\yii\helpers\Html::dropDownList()]] for details on how this is to be rendered.
+     */
+    public $items1 = [];
+
+    /**
+     * @var array the HTML attributes for the first field's input tag.
+     */
+    public $options1 = [];
+
+    /**
+     * @var array the widget options for the first field if [[type]] is [[INPUT_WIDGET]] or one of the Krajee input
+     * inputs from `\kartik\widgets`.
+     */
+    public $widgetOptions1 = [];
+
+    /**
+     * @var string the second field's model attribute that this widget is associated with.
+     */
+    public $attribute2;
+
+    /**
+     * @var array the active field configuration for attribute2 (applicable when [[form]] property is set)
+     * @see [[\kartik\form\ActiveField]]
+     */
+    public $fieldConfig2 = [];
+
+    /**
+     * @var string the second field's input name. This must be set if [[model]] and [[attribute2]] are not set.
+     */
+    public $name2;
+
+    /**
+     * @var string the second field's input value.
+     */
+    public $value2;
+
+    /**
+     * @var array the option data items for second fieldif [[type]] is set to [[INPUT_DROPDOWN_LIST]], [[INPUT_LIST_BOX]],
+     * [[INPUT_CHECKBOX_LIST]], [[INPUT_RADIO_LIST]], [[INPUT_CHECKBOX_BUTTON_GROUP]], [[INPUT_RADIO_BUTTON_GROUP]].
+     *
+     * @see [[\yii\helpers\Html::dropDownList()]] for details on how this is to be rendered.
+     */
+    public $items2 = [];
+
+    /**
+     * @var array the HTML attributes for the second field's input tag.
+     */
+    public $options2 = [];
+
+    /**
+     * @var array the widget options for the second field if [[type]] is [[INPUT_WIDGET]] or one of the
+     * inputs from `\kartik\widgets`.
+     */
+    public $widgetOptions2 = [];
+
+    /**
+     * @var array the HTML attributes for the generated widget input. This has the `input-group` CSS class set by default.
+     */
+    public $options = [];
+
+    /**
+     * @var array the HTML attributes for the widget container
+     */
+    public $widgetContainer = [];
+
+    /**
+     * @var array the HTML attributes for the common error block container
+     */
+    public $errorContainer = [];
+
     /**
      * @var array the list of valid inputs
      */
@@ -172,6 +323,7 @@ class FieldRange extends Widget
         self::INPUT_FILE => self::INPUT_FILE,
         self::INPUT_WIDGET => self::INPUT_WIDGET,
     ];
+
     /**
      * @var array the list of valid input widgets
      */
@@ -191,6 +343,7 @@ class FieldRange extends Widget
         self::INPUT_COLOR => self::INPUT_COLOR,
         self::INPUT_FILE_WIDGET => self::INPUT_FILE_WIDGET,
     ];
+
     /**
      * @var array the list of valid dropdown inputs
      */
@@ -202,156 +355,22 @@ class FieldRange extends Widget
         self::INPUT_CHECKBOX_BUTTON_GROUP => self::INPUT_CHECKBOX_BUTTON_GROUP,
         self::INPUT_RADIO_BUTTON_GROUP => self::INPUT_RADIO_BUTTON_GROUP,
     ];
-    /**
-     * @var ActiveForm the form instance, if used with active form
-     */
-    public $form;
-    /**
-     * @var Model the data model that this widget is associated with.
-     */
-    public $model;
-    /**
-     * @var string the input types for the field (must be one of the `kartik\field\FieldRange::INPUT_XXX` constants.
-     */
-    public $type = self::INPUT_TEXT;
-    /**
-     * @var string the widget class to use if [[type]] is set to [[INPUT_WIDGET]].
-     */
-    public $widgetClass;
-    /**
-     * @var string the label to be displayed. Positioning of the label can be controlled by the [[template]] property.
-     */
-    public $label = '';
-    /**
-     * @var array HTML attributes for the label.
-     */
-    public $labelOptions = [];
-    /**
-     * @var string the template to render the widget.
-     *
-     * The following special tokens will be replaced:
-     * - `{label}`: will be replaced by the [[label]] property
-     * - `{widget}`: will be replaced by the range widget markup
-     * - `{error}`: the common error block for the widget.
-     */
-    public $template = '{label}{widget}{error}';
-    /**
-     * @var string the field separator string between first and second field
-     */
-    public $separator = '&larr; to &rarr;';
-    /**
-     * @var array HTML attributes for the separator. The following array keys are specially identified:
-     *
-     * - `tag`: _string_, the HTML tag used to render the separator container. Defaults to `span`.
-     *
-     * Defaults to:
-     * - `['class' => 'input-group-addon']` for [[bsVersion]] = `3.x`
-     * - `['class' => 'input-group-text']` for [[bsVersion]] = `4.x`
-     */
-    public $separatorOptions = [];
-    /**
-     * @var boolean whether to implement and render bootstrap 3 addons using [[\kartik\form\ActiveField]].
-     *
-     * - if set to `true`, the form instance must be based on [[ActiveForm]].
-     * - if set to `false` you can use your own widget based on [[\yii\widgets\ActiveForm]].
-     */
-    public $useAddons = true;
 
-    /**
-     * @var string the additional CSS class that will be appended to input markup
-     */
-    public $addInputCss = 'form-control';
-
-    /**
-     * @var string the first field's model attribute that this widget is associated with.
-     */
-    public $attribute1;
-    /**
-     * @var array the active field configuration for attribute1 (applicable when [[form]] property is set).
-     * @see [[\kartik\form\ActiveField]]
-     */
-    public $fieldConfig1 = [];
-    /**
-     * @var string the first field's input name. This must be set if [[model]] and [[attribute1]] are not set.
-     */
-    public $name1;
-    /**
-     * @var string the first field's input value.
-     */
-    public $value1;
-    /**
-     * @var array the option data items for first field if [[type]] is set to [[INPUT_DROPDOWN_LIST]], [[INPUT_LIST_BOX]],
-     * [[INPUT_CHECKBOX_LIST]], [[INPUT_RADIO_LIST]], [[INPUT_CHECKBOX_BUTTON_GROUP]], [[INPUT_RADIO_BUTTON_GROUP]].
-     *
-     * @see [[\yii\helpers\Html::dropDownList()]] for details on how this is to be rendered.
-     */
-    public $items1 = [];
-    /**
-     * @var array the HTML attributes for the first field's input tag.
-     */
-    public $options1 = [];
-    /**
-     * @var array the widget options for the first field if [[type]] is [[INPUT_WIDGET]] or one of the Krajee input
-     * inputs from `\kartik\widgets`.
-     */
-    public $widgetOptions1 = [];
-    /**
-     * @var string the second field's model attribute that this widget is associated with.
-     */
-    public $attribute2;
-    /**
-     * @var array the active field configuration for attribute2 (applicable when [[form]] property is set)
-     * @see [[\kartik\form\ActiveField]]
-     */
-    public $fieldConfig2 = [];
-    /**
-     * @var string the second field's input name. This must be set if [[model]] and [[attribute2]] are not set.
-     */
-    public $name2;
-    /**
-     * @var string the second field's input value.
-     */
-    public $value2;
-    /**
-     * @var array the option data items for second fieldif [[type]] is set to [[INPUT_DROPDOWN_LIST]], [[INPUT_LIST_BOX]],
-     * [[INPUT_CHECKBOX_LIST]], [[INPUT_RADIO_LIST]], [[INPUT_CHECKBOX_BUTTON_GROUP]], [[INPUT_RADIO_BUTTON_GROUP]].
-     *
-     * @see [[\yii\helpers\Html::dropDownList()]] for details on how this is to be rendered.
-     */
-    public $items2 = [];
-    /**
-     * @var array the HTML attributes for the second field's input tag.
-     */
-    public $options2 = [];
-    /**
-     * @var array the widget options for the second field if [[type]] is [[INPUT_WIDGET]] or one of the
-     * inputs from `\kartik\widgets`.
-     */
-    public $widgetOptions2 = [];
-    /**
-     * @var array the HTML attributes for the generated widget input. This has the `input-group` CSS class set by default.
-     */
-    public $options = [];
-    /**
-     * @var array the HTML attributes for the widget container
-     */
-    public $widgetContainer = [];
-    /**
-     * @var array the HTML attributes for the common error block container
-     */
-    public $errorContainer = [];
-    /**
-     * @var array the HTML options for the main container
-     */
-    public $container = [];
     /**
      * @var boolean whether the field is a normal HTML Input rendered by yii\helpers\Html
      */
     private $_isInput = false;
+
     /**
      * @var boolean whether the field is a dropdown input
      */
     private $_isDropdown = false;
+
+    /**
+     * @var array the HTML options for the main container
+     */
+    public $container = [];
+
     /**
      * @var boolean whether it the form is of bootstrap horizontal layout style.
      */
@@ -377,13 +396,43 @@ class FieldRange extends Widget
 
     /**
      * @inheritdoc
-     * @throws InvalidConfigException
-     * @throws Exception
      */
     public function run()
     {
         parent::run();
         $this->renderWidget();
+    }
+
+    /**
+     * Renders the field range widget.
+     */
+    protected function renderWidget()
+    {
+        Html::addCssClass($this->options, 'kv-field-range');
+        if ($this->_isHorizontalForm) {
+            $style = $this->form->getFormLayoutStyle();
+            Html::addCssClass($this->labelOptions, $style['labelCss']);
+            Html::addCssClass($this->widgetContainer, $style['inputCss']);
+            Html::addCssClass($this->errorContainer, $style['offsetCss']);
+        }
+        if ($this->type === self::INPUT_DATE) {
+            $widget = $this->getDatePicker();
+        } else {
+            Html::addCssClass($this->container, 'mrbt0 form-group blockcenter');
+            Html::addCssClass($this->options, 'input-group');
+            $tag = ArrayHelper::remove($this->separatorOptions, 'tag', 'span');
+            $widget = isset($this->form) ? $this->getFormInput() : $this->getInput(1) .
+                Html::tag($tag, $this->separator, $this->separatorOptions) . $this->getInput(2);
+            $widget = Html::tag('div', $widget, $this->options);
+        }
+        $widget = Html::tag('div', $widget, $this->widgetContainer);
+        $error = Html::tag('div', '<div class="help-block"></div>', $this->errorContainer);
+
+        echo Html::tag('div', strtr($this->template, [
+            '{label}' => Html::label($this->label, null, $this->labelOptions),
+            '{widget}' => $widget,
+            '{error}' => $error
+        ]), $this->container);
     }
 
     /**
@@ -394,32 +443,20 @@ class FieldRange extends Widget
     public function validateSettings()
     {
         if (!$this->hasModel() && ($this->name1 === null || $this->name2 === null)) {
-            throw new InvalidConfigException(
-                "Either 'name1','name2' or 'attribute1', 'attribute2' with 'model' properties must be specified."
-            );
+            throw new InvalidConfigException("Either 'name1','name2' or 'attribute1', 'attribute2' with 'model' properties must be specified.");
         }
         if (!$this->_isInput && $this->type !== self::INPUT_WIDGET && !isset(self::$_inputWidgets[$this->type])) {
-            throw new InvalidConfigException(
-                "Invalid value for 'type'. Must be one of the FieldRange::INPUT constants."
-            );
+            throw new InvalidConfigException("Invalid value for 'type'. Must be one of the FieldRange::INPUT constants.");
         }
         if (isset($this->form) && $this->useAddons && !$this->form instanceof ActiveForm) {
-            Config::checkDependency(
-                'form\ActiveForm', ['yii2-widget-activeform', 'yii2-widgets'], "when 'useAddons' is set to true."
-            );
-            throw new InvalidConfigException(
-                "The 'form' property must be an instance of '\\kartik\\form\\ActiveForm' or '\\kartik\\widgets\\ActiveForm' when 'useAddons' is set to true."
-            );
+            Config::checkDependency('form\ActiveForm', ['yii2-widget-activeform', 'yii2-widgets'], "when 'useAddons' is set to true.");
+            throw new InvalidConfigException("The 'form' property must be an instance of '\\kartik\\form\\ActiveForm' or '\\kartik\\widgets\\ActiveForm' when 'useAddons' is set to true.");
         }
         if (isset($this->form) && !$this->useAddons && !$this->form instanceof \yii\widgets\ActiveForm) {
-            throw new InvalidConfigException(
-                "The 'form' property must be an instance of '\\yii\\widgets\\ActiveForm'."
-            );
+            throw new InvalidConfigException("The 'form' property must be an instance of '\\yii\\widgets\\ActiveForm'.");
         }
         if (isset($this->form) && !$this->hasModel()) {
-            throw new InvalidConfigException(
-                "The 'model' and 'attribute1', 'attribute2' property must be set when 'form' is set."
-            );
+            throw new InvalidConfigException("The 'model' and 'attribute1', 'attribute2' property must be set when 'form' is set.");
         }
         if ($this->type === self::INPUT_WIDGET && empty($this->widgetClass)) {
             throw new InvalidConfigException("The 'widgetClass' property must be set for widget input type.");
@@ -428,97 +465,40 @@ class FieldRange extends Widget
 
     /**
      * Initializes the widget options.
-     * @throws InvalidConfigException
      */
     public function initOptions()
     {
-        Html::addCssClass($this->labelOptions, ['control-label', 'col-form-label']);
-        $css = $this->isBs4() ? 'input-group-text' : 'input-group-addon';
-        Html::addCssClass($this->separatorOptions, [$css, 'kv-field-separator']);
+        Html::addCssClass($this->labelOptions, 'control-label');
+        Html::addCssClass($this->separatorOptions, 'kv-field-separator');
         if (isset(self::$_inputWidgets[$this->type])) {
             $this->widgetClass = $this->type;
         }
-        if ($this->_isInput) {
-            Html::addCssClass($this->options1, $this->addInputCss);
+        if ($this->_isInput && empty($this->options1['class'])) {
+            Html::addCssClass($this->options1, 'form-control');
         }
-        if ($this->_isInput) {
-            Html::addCssClass($this->options2, $this->addInputCss);
+        if ($this->_isInput && empty($this->options2['class'])) {
+            Html::addCssClass($this->options2, 'form-control');
+        }
+        if (empty($this->options['id'])) {
+            $this->options['id'] = $this->getId();
         }
         if (empty($this->options1['id'])) {
-            $this->options1['id'] = $this->hasModel() ? Html::getInputId(
-                $this->model, $this->attribute1
-            ) : $this->options['id'] . '-1';
+            $this->options1['id'] = $this->hasModel() ? Html::getInputId($this->model, $this->attribute1) : $this->options['id'] . '-1';
         }
         if (empty($this->options2['id'])) {
-            $this->options2['id'] = $this->hasModel() ? Html::getInputId(
-                $this->model, $this->attribute2
-            ) : $this->options['id'] . '-2';
+            $this->options2['id'] = $this->hasModel() ? Html::getInputId($this->model, $this->attribute2) : $this->options['id'] . '-2';
         }
         if (empty($this->errorContainer['id'])) {
             $this->errorContainer['id'] = $this->options1['id'] . '-error';
         }
         $this->container['id'] = $this->options['id'] . '-container';
-    }
-
-    /**
-     * Renders the field range widget.
-     * @throws InvalidConfigException
-     * @throws Exception
-     */
-    protected function renderWidget()
-    {
-        Html::addCssClass($this->options, 'kv-field-range');
-        Html::addCssClass($this->container, 'kv-field-range-container');
-        $isBs4 = $this->isBs4();
-        $style = ['labelCss' => 'col-sm-3', 'inputCss' => 'col-sm-9'];
-        if ($this->_isHorizontalForm) {
-            $style = $this->form->getFormLayoutStyle();
-            Html::addCssClass($this->labelOptions, $style['labelCss']);
-            Html::addCssClass($this->widgetContainer, $style['inputCss']);
-        }
-        if ($this->type === self::INPUT_DATE) {
-            $widget = $this->getDatePicker();
-        } else {
-            $css = 'form-group';
-            if ($isBs4 && $this->_isHorizontalForm) {
-                $css = [$css, 'row'];
-            }
-            Html::addCssClass($this->container, $css);
-            Html::addCssClass($this->options, 'input-group');
-            $tag = ArrayHelper::remove($this->separatorOptions, 'tag', 'span');
-            $sep = Html::tag($tag, $this->separator, $this->separatorOptions);
-            if ($isBs4) {
-                $sep = Html::tag('div', $sep, ['class' => 'input-group-append kv-separator-container']);
-            }
-            $getInput = isset($this->form) ? 'getFormInput' : 'getInput';
-            $widget = Html::tag('div', $this->$getInput(1) . $sep . $this->$getInput(2), $this->options);
-        }
-        $widget = Html::tag('div', $widget, $this->widgetContainer);
-        $css = 'help-block';
-        if ($this->isBs4()) {
-            $css .= ' text-danger';
-        }
-        $preError = '';
-        $errorCss = ['kv-field-range-error'];
-        if ($this->_isHorizontalForm) {
-            $errorCss[] = $style['inputCss'];
-            Html::addCssClass($this->errorContainer, $errorCss);
-            $preError = Html::tag('div', '', ['class' => $style['labelCss']]);
-        }
-        $error = $preError . Html::tag('div', '<div class="' . $css . '"></div>', $this->errorContainer);
-        $replaceTokens = [
-            '{label}' => Html::label($this->label, null, $this->labelOptions),
-            '{widget}' => $widget,
-            '{error}' => $error,
-        ];
-        echo Html::tag('div', strtr($this->template, $replaceTokens), $this->container);
+        $this->container['style'] = 'margin-bottom:0';
     }
 
     /**
      * Generate the range input markup for [[DatePicker]] widget.
      *
      * @return string the date picker range input
-     * @throws Exception
      */
     protected function getDatePicker()
     {
@@ -529,28 +509,22 @@ class FieldRange extends Widget
         $this->widgetOptions1['type'] = $class::TYPE_RANGE;
         $this->widgetOptions1['separator'] = $this->separator;
         if ($this->hasModel()) {
-            $this->widgetOptions1 = ArrayHelper::merge(
-                $this->widgetOptions1,
-                [
-                    'model' => $this->model,
-                    'attribute' => $this->attribute1,
-                    'attribute2' => $this->attribute2,
-                    'options' => $this->options,
-                    'options2' => $this->options2,
-                ]
-            );
+            $this->widgetOptions1 = ArrayHelper::merge($this->widgetOptions1, [
+                'model' => $this->model,
+                'attribute' => $this->attribute1,
+                'attribute2' => $this->attribute2,
+                'options' => $this->options,
+                'options2' => $this->options2,
+            ]);
         } else {
-            $this->widgetOptions1 = ArrayHelper::merge(
-                $this->widgetOptions1,
-                [
-                    'name' => $this->name1,
-                    'name2' => $this->name2,
-                    'value' => isset($this->value1) ? $this->value1 : null,
-                    'value2' => isset($this->value2) ? $this->value2 : null,
-                    'options' => $this->options1,
-                    'options2' => $this->options2,
-                ]
-            );
+            $this->widgetOptions1 = ArrayHelper::merge($this->widgetOptions1, [
+                'name' => $this->name1,
+                'name2' => $this->name2,
+                'value' => isset($this->value1) ? $this->value1 : null,
+                'value2' => isset($this->value2) ? $this->value2 : null,
+                'options' => $this->options1,
+                'options2' => $this->options2,
+            ]);
         }
         if (isset($this->form)) {
             $this->widgetOptions1['form'] = $this->form;
@@ -561,50 +535,46 @@ class FieldRange extends Widget
     /**
      * Generate the input markup for an [[ActiveForm]] input.
      *
-     * @param integer $i the input serial number
-     *
      * @return string the form input markup
      */
-    protected function getFormInput($i)
+    protected function getFormInput()
     {
         Html::addCssClass($this->options, 'input-group');
         $fieldType = $this->type;
-        $fieldConfig = "fieldConfig{$i}";
-        $options = "options{$i}";
-        $attribute = "attribute{$i}";
-        $items = "items{$i}";
-        $widgetOptions = "widgetOptions{$i}";
-        $css1 = $i === 1 ? 'kv-container-from' : 'kv-container-to';
-        $css2 = $i === 1 ? 'kv-field-from' : 'kv-field-to';
-        $fieldOpts = ArrayHelper::getValue($this->$fieldConfig, 'options', []);
-        Html::addCssClass($fieldOpts, $css1);
-        Html::addCssClass($fieldOpts, $this->addInputCss);
-        $this->$fieldConfig = ArrayHelper::merge(
-            $this->$fieldConfig, ['template' => '{input}{error}', 'options' => $fieldOpts]
-        );
-        Html::addCssClass($this->$options, $css2);
-        Html::addCssClass($this->$options, $this->addInputCss);
-        $field = $this->form->field($this->model, $this->$attribute, $this->$fieldConfig);
+        $options1 = ArrayHelper::getValue($this->fieldConfig1, 'options', []);
+        $options2 = ArrayHelper::getValue($this->fieldConfig2, 'options', []);
+        Html::addCssClass($options1, 'kv-container-from form-control');
+        Html::addCssClass($options2, 'kv-container-to form-control');
+        $this->fieldConfig1 = ArrayHelper::merge($this->fieldConfig1, ['template' => '{input}{error}', 'options' => $options1]);
+        $this->fieldConfig2 = ArrayHelper::merge($this->fieldConfig2, ['template' => '{input}{error}', 'options' => $options2]);
+        Html::addCssClass($this->options1, 'form-control kv-field-from');
+        Html::addCssClass($this->options2, 'form-control kv-field-to');
+        $field1 = $this->form->field($this->model, $this->attribute1, $this->fieldConfig1);
+        $field2 = $this->form->field($this->model, $this->attribute2, $this->fieldConfig2);
         if ($this->type === self::INPUT_HTML5_INPUT) {
-            $input = $field->$fieldType(ArrayHelper::remove($this->$options, 'type', 'text'), $this->$options);
+            $input1 = $field1->$fieldType(ArrayHelper::remove($this->options1, 'type', 'text'), $this->options1);
+            $input2 = $field2->$fieldType(ArrayHelper::remove($this->options2, 'type', 'text'), $this->options2);
         } elseif ($this->_isDropdown) {
-            $input = $field->$fieldType($this->$items, $this->$options);
+            $input1 = $field1->$fieldType($this->items1, $this->options1);
+            $input2 = $field2->$fieldType($this->items2, $this->options2);
         } elseif ($this->_isInput) {
-            $input = $field->$fieldType($this->$options);
+            $input1 = $field1->$fieldType($this->options1);
+            $input2 = $field2->$fieldType($this->options2);
         } else {
-            $this->setWidgetOptions($i);
-            $input = $field->widget($this->widgetClass, $this->$widgetOptions);
+            $this->setWidgetOptions(1);
+            $this->setWidgetOptions(2);
+            $input1 = $field1->widget($this->widgetClass, $this->widgetOptions1);
+            $input2 = $field2->widget($this->widgetClass, $this->widgetOptions2);
+
         }
-        return $input;
+        return $input1 . '<span class="input-group-addon kv-field-separator">' . $this->separator . '</span>' . $input2;
     }
 
     /**
      * Generate the input markup for a normal input.
      *
      * @param integer $i the input serial number
-     *
      * @return string the input markup
-     * @throws Exception
      */
     protected function getInput($i)
     {
@@ -656,23 +626,17 @@ class FieldRange extends Widget
         $options = "options{$i}";
         $widgetOptions = "widgetOptions{$i}";
         if ($this->hasModel()) {
-            $this->$widgetOptions = ArrayHelper::merge(
-                $this->$widgetOptions,
-                [
-                    'model' => $this->model,
-                    'attribute' => $this->$attribute,
-                    'options' => $this->$options,
-                ]
-            );
+            $this->$widgetOptions = ArrayHelper::merge($this->$widgetOptions, [
+                'model' => $this->model,
+                'attribute' => $this->$attribute,
+                'options' => $this->$options
+            ]);
         } else {
-            $this->$widgetOptions = ArrayHelper::merge(
-                $this->$widgetOptions,
-                [
-                    'name' => $this->$name,
-                    'value' => $this->$value,
-                    'options' => $this->$options,
-                ]
-            );
+            $this->$widgetOptions = ArrayHelper::merge($this->$widgetOptions, [
+                'name' => $this->$name,
+                'value' => $this->$value,
+                'options' => $this->$options
+            ]);
         }
     }
 
@@ -683,18 +647,16 @@ class FieldRange extends Widget
     {
         $view = $this->getView();
         $name = 'kvFieldRange';
-        FieldRangeAsset::registerBundle($view, $this->bsVersion);
+        FieldRangeAsset::register($view);
         $id = '$("#' . $this->options2['id'] . '")';
-        $options = Json::encode(
-            [
-                'attrFrom' => $this->options1['id'],
-                'container' => $this->container['id'],
-                'errorContainer' => $this->errorContainer['id'],
-            ]
-        );
+        $options = Json::encode([
+            'attrFrom' => $this->options1['id'],
+            'container' => $this->container['id'],
+            'errorContainer' => $this->errorContainer['id'],
+        ]);
         $hashVar = $name . '_' . hash('crc32', $options);
-        $this->options['data-krajee-' . $name] = $hashVar;
-        $view->registerJs("var {$hashVar} = {$options};\n", $this->hashVarLoadPosition);
+        $this->options['data-krajee-'.$name] = $hashVar;
+        $view->registerJs("var {$hashVar} = {$options};\n", View::POS_HEAD);
         $view->registerJs("{$id}.{$name}({$hashVar});");
     }
 
