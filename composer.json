@@ -16,7 +16,7 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "kartik\\field\\": "src"
+            "saritasa\\yii2\\field\\range\\": "src"
         }
     },
     "extra": {

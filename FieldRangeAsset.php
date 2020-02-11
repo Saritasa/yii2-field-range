@@ -7,7 +7,7 @@
  */
 
 //namespace kartik\field;
-namespace saritasa\field;
+namespace saritasa\yii2\field\range;
 
 /**
  * Field Range bundle for \kartik\field\FieldRange

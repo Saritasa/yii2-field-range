@@ -7,7 +7,7 @@
  */
 
 //namespace kartik\field;
-namespace saritasa\field;
+namespace saritasa\yii2\field\range;
 
 //use kartik\date\DatePicker;
 use yii\base\Model;
