@@ -16,7 +16,7 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "saritasa\\yii2\\field\\range\\": "src"
+            "saritasa\\yii2\\field\\range\\": ""
         }
     },
     "extra": {
